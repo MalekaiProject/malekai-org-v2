@@ -1,0 +1,6 @@
+[submodule "public/crowfall-data"]
+	path = public/crowfall-data
+	url = git://github.com/MalekaiProject/crowfall-data.git
+[submodule "public/crowfall-images"]
+	path = public/crowfall-images
+	url = git://github.com/MalekaiProject/crowfall-images

@@ -1,22 +1,42 @@
 <template>
   <div class="home">
-    <img alt="Vue logo" src="../assets/logo.png">
-    <HelloWorld msg="Welcome to Your Vue.js App"/>
+    <b-field group-multiline grouped>
+      <div class="control">
+      </div>
+    </b-field>
+    <b-table
+        :data="this.discList"
+        :striped=true
+        :debounce-search="100">
+
+      <b-table-column v-slot="props" field="name" label="Name" centered searchable sortable deb>
+        <span class="discName">{{ props.row.name }}</span>
+        <img class="discIcon" :src="'../../crowfall-images/images/disciplines/' + props.row.id + '.png'" :alt="props.row.id"/>
+      </b-table-column>
+      <b-table-column v-slot="props" field="type" label="Type" centered sortable>
+        {{ props.row.type }}
+      </b-table-column>
+      <b-table-column v-slot="props" field="stats" label="Stats" centered sortable searchable>
+        {{ props.row.stats }}
+      </b-table-column>
+      <b-table-column v-slot="props" field="powers  " label="Powers" centered sortable searchable>
+        Powers: {{ props.row.grantsPowers.map(power => power.name + ": " + power.description) }}<br/>
+        Slots: {{ props.row.grantsSlot.map(power => power.name + ": " + power.description) }}<br/>
+        Traits: {{ props.row.grantsTrait.map(power => power.name + ": " + power.description) }}
+      </b-table-column>
+    </b-table>
   </div>
 </template>
 
 <script>
 // @ is an alias to /src
-import HelloWorld from '@/components/List.vue'
 
 export default {
-  name: 'Home',
-  components: {
-    HelloWorld
-  },
+  name: 'Disciplines',
+  components: {},
   data() {
     return {
-      discs: {}
+      discs: {},
     }
   },
   created() {
@@ -24,8 +44,8 @@ export default {
 
       // Need to pass string literals when calling Node Require because of Webpack
       // https://github.com/webpack/webpack/issues/10567
-      this.discs = getJsonInDirectory(require.context('../../public/data/discipline', true, /\.json$/));
-      this.powers = getJsonInDirectory(require.context('../../public/data/power', true, /\.json$/));
+      this.discs = getJsonInDirectory(require.context('../../public/crowfall-data/data/discipline', true, /\.json$/));
+      this.powers = getJsonInDirectory(require.context('../../public/crowfall-data/data/power', true, /\.json$/));
 
       function getJsonInDirectory(requireContext) {
         const json = {};
@@ -66,6 +86,27 @@ export default {
 
     }.bind(this);
     loadJson();
+  },
+  computed: {
+    discList: function () {
+      let list = [];
+      for (let discName in this.discs.major) {
+        list.push(this.discs.major[discName])
+      }
+      return list;
+    }
   }
 }
 </script>
+
+<style lang="scss">
+.discIcon {
+  width: 50px;
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+}
+.discName {
+  font-weight: bold;
+}
+</style>

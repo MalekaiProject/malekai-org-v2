@@ -1,7 +1,8 @@
 <template>
   <div id="app">
+    <img class="logo" alt="Logo" src="./assets/images/malekai.svg">
     <div id="nav">
-      <router-link to="/">Home</router-link> |
+      <router-link to="/">Disciplines</router-link> |
       <router-link to="/about">About</router-link>
     </div>
     <router-view/>
@@ -17,6 +18,12 @@
   color: #2c3e50;
 }
 
+.logo {
+  filter: drop-shadow(0px 10px 10px #4f4444);
+  padding: 10px;
+  height: 200px;
+}
+
 #nav {
   padding: 30px;
 
@@ -25,7 +32,7 @@
     color: #2c3e50;
 
     &.router-link-exact-active {
-      color: #42b983;
+      color: black;
     }
   }
 }
