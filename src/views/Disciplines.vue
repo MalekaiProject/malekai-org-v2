@@ -16,13 +16,21 @@
       <b-table-column v-slot="props" field="type" label="Type" centered sortable>
         {{ props.row.type }}
       </b-table-column>
-      <b-table-column v-slot="props" field="stats" label="Stats" centered sortable searchable>
-        {{ props.row.stats }}
+      <b-table-column v-slot="props" field="stats" label="Stats" width="400px" centered sortable searchable>
+        <p v-for="stat in props.row.stats" :key="stat">
+          {{ stat.name + ": " + stat.value }}
+        </p>
       </b-table-column>
       <b-table-column v-slot="props" field="powers  " label="Powers" centered sortable searchable>
-        Powers: {{ props.row.grantsPowers.map(power => power.name + ": " + power.description) }}<br/>
-        Slots: {{ props.row.grantsSlot.map(power => power.name + ": " + power.description) }}<br/>
-        Traits: {{ props.row.grantsTrait.map(power => power.name + ": " + power.description) }}
+        <p v-for="power in props.row.grantsPowers" :key="power">
+          {{ power.name + ": " + power.description }}
+        </p>
+        <p v-for="slot in props.row.grantsSlot" :key="slot">
+          Grants Slot: {{ slot.name + ": " + slot.description }}
+        </p>
+        <p v-for="trait in props.row.grantsTrait" :key="trait">
+          Grants Trait: {{ trait.name }}
+        </p>
       </b-table-column>
     </b-table>
   </div>
@@ -30,6 +38,7 @@
 
 <script>
 // @ is an alias to /src
+import {getJsonInDirectory} from "@/assets/js/helpers";
 
 export default {
   name: 'Disciplines',
@@ -40,52 +49,9 @@ export default {
     }
   },
   created() {
-    const loadJson = function () {
-
-      // Need to pass string literals when calling Node Require because of Webpack
-      // https://github.com/webpack/webpack/issues/10567
-      this.discs = getJsonInDirectory(require.context('../../public/crowfall-data/data/discipline', true, /\.json$/));
-      this.powers = getJsonInDirectory(require.context('../../public/crowfall-data/data/power', true, /\.json$/));
-
-      function getJsonInDirectory(requireContext) {
-        const json = {};
-        requireContext.keys().forEach((filepath) => {
-          const jsonContent = requireContext(filepath);
-
-          function createNestedObject(base, names, value) {
-            // If a value is given, remove the last name and keep it for later:
-            const lastName = arguments.length === 3 ? names.pop() : false;
-
-            // Walk the hierarchy, creating new objects where needed.
-            // If the lastName was removed, then the last object is not set yet:
-            for (let i = 0; i < names.length; i++) {
-              base = base[names[i]] = base[names[i]] || {};
-            }
-
-            // If a value was given, set it to the last name:
-            if (lastName) base = base[lastName] = value;
-
-            // Return the last object in the hierarchy:
-            return base;
-          }
-
-          // File path example: ./disciplines/major/adjudicator.json
-          const pathParts = filepath.split('/');
-          const objectStructure = pathParts.slice(1, pathParts.length - 1);
-          const objectName = pathParts.pop().split('.').shift(); // Remove .json suffix off filename
-          objectStructure.push(objectName); // Add file name (minus .json) to object struct
-
-          // console.log("Struct: " + objectStructure);
-          // console.log("Value: " + obj);
-
-          createNestedObject(json, objectStructure, jsonContent)
-        })
-
-        return json;
-      }
-
-    }.bind(this);
-    loadJson();
+    // Need to pass string literals when calling Node Require because of Webpack
+    // https://github.com/webpack/webpack/issues/10567
+    this.discs = getJsonInDirectory(require.context('../../public/crowfall-data/data/discipline', true, /\.json$/));
   },
   computed: {
     discList: function () {
