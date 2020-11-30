@@ -7,30 +7,29 @@
     <b-table
         :data="this.discList"
         :striped=true
-        :debounce-search="100">
+        :debounce-search="100"
+        class="dataTable">
 
-      <b-table-column v-slot="props" field="name" label="Name" centered searchable sortable deb>
+      <b-table-column v-slot="props" field="name" label="Name" searchable sortable deb>
         <span class="discName">{{ props.row.name }}</span>
         <img class="discIcon" :src="'../../crowfall-images/images/disciplines/' + props.row.id + '.png'" :alt="props.row.id"/>
       </b-table-column>
-      <b-table-column v-slot="props" field="type" label="Type" centered sortable>
+      <b-table-column v-slot="props" field="type" label="Type" sortable>
         {{ props.row.type }}
       </b-table-column>
-      <b-table-column v-slot="props" field="stats" label="Stats" width="400px" centered sortable searchable>
+      <b-table-column v-slot="props" field="stats" label="Stats" width="400px" sortable searchable>
         <p v-for="stat in props.row.stats" :key="stat">
           {{ stat.name + ": " + stat.value }}
         </p>
       </b-table-column>
-      <b-table-column v-slot="props" field="powers  " label="Powers" centered sortable searchable>
+      <b-table-column v-slot="props" field="powers  " label="Powers" sortable searchable>
         <p v-for="power in props.row.grantsPowers" :key="power">
           {{ power.name + ": " + power.description }}
         </p>
         <p v-for="slot in props.row.grantsSlot" :key="slot">
           Grants Slot: {{ slot.name + ": " + slot.description }}
         </p>
-        <p v-for="trait in props.row.grantsTrait" :key="trait">
-          Grants Trait: {{ trait.name }}
-        </p>
+        Grants Trait: {{ props.row.grantsTrait.map(trait => trait.name).join(", ") }}
       </b-table-column>
     </b-table>
   </div>
@@ -57,7 +56,9 @@ export default {
     discList: function () {
       let list = [];
       for (let discName in this.discs.major) {
-        list.push(this.discs.major[discName])
+        if (Object.prototype.hasOwnProperty.call(this.discs.major, discName)) {
+          list.push(this.discs.major[discName]);
+        }
       }
       return list;
     }
@@ -69,10 +70,18 @@ export default {
 .discIcon {
   width: 50px;
   display: block;
-  margin-left: auto;
-  margin-right: auto;
+  alignment: center;
 }
 .discName {
   font-weight: bold;
+  text-align: center;
+  alignment: center;
+}
+.dataTable {
+  width: 80%;
+  margin-left: auto;
+  margin-right: auto;
+  border: 1px black;
+  text-align: left;
 }
 </style>

@@ -1,4 +1,4 @@
-const getJsonInDirectory = function getJsonInDirectory(requireContext) {
+export function getJsonInDirectory(requireContext) {
     const json = {};
     requireContext.keys().forEach((filepath) => {
         const jsonContent = requireContext(filepath);
@@ -34,6 +34,3 @@ const getJsonInDirectory = function getJsonInDirectory(requireContext) {
 
     return json;
 }
-
-export {getJsonInDirectory};
-
