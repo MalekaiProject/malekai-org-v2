@@ -1,9 +1,5 @@
 <template>
   <div class="home">
-    <b-field group-multiline grouped>
-      <div class="control">
-      </div>
-    </b-field>
     <b-table
         :data="this.discList"
         :striped=true
