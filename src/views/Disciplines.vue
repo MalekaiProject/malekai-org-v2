@@ -1,7 +1,7 @@
 <template>
   <div class="home">
     <b-table
-        :data="this.discList"
+        :data="this.discs"
         :striped=true
         :debounce-search="100"
         class="dataTable">
@@ -22,10 +22,10 @@
         <p v-for="power in props.row.grantsPowers" :key="power">
           {{ power.name + ": " + power.description }}
         </p>
-        <p v-for="slot in props.row.grantsSlot" :key="slot">
-          Grants Slot: {{ slot.name + ": " + slot.description }}
+        <p v-for="slot in props.row.grantsTrait" :key="slot">
+          Grants Trait: {{ slot.name}}
         </p>
-        Grants Trait: {{ props.row.grantsTrait.map(trait => trait.name).join(", ") }}
+<!--        Grants Trait: {{ props.row.grantsTrait.map(trait => trait.name).join(", ") }}-->
       </b-table-column>
     </b-table>
   </div>
@@ -33,31 +33,58 @@
 
 <script>
 // @ is an alias to /src
-import {getJsonInDirectory} from "@/assets/js/helpers";
+// import gql from 'graphql-tag'
+const axios = require('axios').default;
 
 export default {
   name: 'Disciplines',
   components: {},
+  // apollo: {
+  //   discs: gql`
+  //     query {
+  //         allDisciplines {
+  //           id
+  //           name
+  //         }
+  //       }
+  // `,
+  // },
   data() {
     return {
       discs: {},
     }
   },
   created() {
-    // Need to pass string literals when calling Node Require because of Webpack
-    // https://github.com/webpack/webpack/issues/10567
-    this.discs = getJsonInDirectory(require.context('../../public/crowfall-data/data/discipline', true, /\.json$/));
+  },
+  mounted () {
+    axios.get(
+        'http://crow.gg',
+        {
+          params: {
+            query: `
+              {
+                allDisciplines {
+                  id
+                  name
+                  type
+                  description
+                  stats
+                  grantsPowers
+                  grantsTrait
+                  grantsSlot
+                }
+              }
+            `
+          }
+        },
+        {
+          headers: {
+            'Content-Type': 'application/json'
+          }
+        }
+    ).then(response => this.discs = response.data.data.allDisciplines)
   },
   computed: {
-    discList: function () {
-      let list = [];
-      for (let discName in this.discs.major) {
-        if (Object.prototype.hasOwnProperty.call(this.discs.major, discName)) {
-          list.push(this.discs.major[discName]);
-        }
-      }
-      return list;
-    }
   }
 }
 </script>
