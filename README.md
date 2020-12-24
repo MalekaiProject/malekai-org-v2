@@ -1,4 +1,8 @@
-# malekai-v3
+# Remake of Malekai.org
+Uses Vue.js, TailwindCSS and backed by GraphQL Crowfall API
+
+Purpose of site will be a Crowpedia type directory of in game info that you can easily drill into data about races, classes, runes and powers using a set of filters backed by the Crowfall API data. Eventually we hope to have a talent tree builder as well and possibly some basic social features.
+
 
 ## Project setup
 ```
