@@ -6,21 +6,22 @@ import 'buefy/dist/buefy.css'
 import VueApollo from 'vue-apollo'
 import ApolloClient from 'apollo-boost'
 
-Vue.use(Buefy)
-Vue.use(VueApollo)
-Vue.config.productionTip = false
+Vue.use(Buefy);
+Vue.use(VueApollo);
+Vue.config.productionTip = false;
+
+const apolloClient = new ApolloClient({
+  // You should use an absolute URL here
+  uri: 'http://crow.gg',
+});
+
+const apolloProvider = new VueApollo({
+  defaultClient: apolloClient,
+});
+
 
 new Vue({
   router,
   apolloProvider,
   render: h => h(App)
-}).$mount('#app')
-
-const apolloClient = new ApolloClient({
-  // You should use an absolute URL here
-  uri: 'http://crow.gg'
-})
-
-const apolloProvider = new VueApollo({
-  defaultClient: apolloClient,
-})
+}).$mount('#app');

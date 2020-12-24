@@ -14,15 +14,15 @@
         {{ props.row.type }}
       </b-table-column>
       <b-table-column v-slot="props" field="stats" label="Stats" width="400px" sortable searchable>
-        <p v-for="stat in props.row.stats" :key="stat">
+        <p v-for="stat in props.row.stats" :key="stat.name">
           {{ stat.name + ": " + stat.value }}
         </p>
       </b-table-column>
       <b-table-column v-slot="props" field="powers  " label="Powers" sortable searchable>
-        <p v-for="power in props.row.grantsPowers" :key="power">
+        <p v-for="power in props.row.grantsPowers" :key="power.name">
           {{ power.name + ": " + power.description }}
         </p>
-        <p v-for="slot in props.row.grantsTrait" :key="slot">
+        <p v-for="slot in props.row.grantsTrait" :key="slot.name">
           Grants Trait: {{ slot.name}}
         </p>
 <!--        Grants Trait: {{ props.row.grantsTrait.map(trait => trait.name).join(", ") }}-->
@@ -33,56 +33,33 @@
 
 <script>
 // @ is an alias to /src
-// import gql from 'graphql-tag'
-const axios = require('axios').default;
+import gql from 'graphql-tag'
 
 export default {
   name: 'Disciplines',
   components: {},
-  // apollo: {
-  //   discs: gql`
-  //     query {
-  //         allDisciplines {
-  //           id
-  //           name
-  //         }
-  //       }
-  // `,
-  // },
+  apollo: {
+    discs: gql`query {
+          discs: allDisciplines {
+                   id
+                   name
+                   type
+                   description
+                   stats
+                   grantsPowers
+                   grantsTrait
+                   grantsSlot
+          }
+        }`,
+  },
   data() {
     return {
-      discs: {},
+      discs: [],
     }
   },
   created() {
   },
   mounted () {
-    axios.get(
-        'http://crow.gg',
-        {
-          params: {
-            query: `
-              {
-                allDisciplines {
-                  id
-                  name
-                  type
-                  description
-                  stats
-                  grantsPowers
-                  grantsTrait
-                  grantsSlot
-                }
-              }
-            `
-          }
-        },
-        {
-          headers: {
-            'Content-Type': 'application/json'
-          }
-        }
-    ).then(response => this.discs = response.data.data.allDisciplines)
   },
   computed: {
   }
